@@ -1,8 +1,7 @@
 {
-  "name": "vue-sidebar-menu",
-  "description": "A Vue.js Sidebar Menu Component",
+  "name": "@semsci/vue-sidebar-menu",
+  "description": "A fork of Vue.js Sidebar Menu Component",
   "version": "4.7.1",
-  "author": "yaminncco <yaminncco@gmail.com>",
   "license": "MIT",
   "main": "dist/vue-sidebar-menu.js",
   "types": "./types/index.d.ts",
@@ -13,9 +12,8 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/yaminncco/vue-sidebar-menu.git"
+    "url": "https://github.com/sem-sci/vue-sidebar-menu.git"
   },
-  "homepage": "https://yaminncco.github.io/vue-sidebar-menu/",
   "keywords": [
     "vue",
     "vue-component",
