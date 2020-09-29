@@ -77,6 +77,8 @@
                 :show-child="showChild"
                 :rtl="rtl"
                 :is-collapsed="isCollapsed"
+                :use-location-polling="useLocationPolling"
+                :disable-vue-router="disableVueRouter"
               >
                 <slot
                   slot="dropdown-icon"
@@ -148,6 +150,14 @@ export default {
     mobileItemStyle: {
       type: Object,
       default: null
+    },
+    useLocationPolling: {
+      type: Boolean,
+      default: false
+    },
+    disableVueRouter: {
+      type: Boolean,
+      default: false
     }
   }
 }

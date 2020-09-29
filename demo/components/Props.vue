@@ -67,6 +67,18 @@
       type: Boolean,
       default: false
     }
+
+    // When the Vue Router is not used, the hashchange event is used to track the active menu. For url's without hashes enable location polling.
+    useLocationPolling: {
+      type: Boolean,
+      default: false
+    }
+
+    // Disable the Vue Router for active menu checking
+    disableVueRouter: {
+      type: Boolean,
+      default: false
+    }
 }
 </pre>
   </div>

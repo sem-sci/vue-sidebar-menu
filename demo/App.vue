@@ -4,6 +4,14 @@
     :class="[{'collapsed' : collapsed}, {'onmobile' : isOnMobile}]"
   >
     <div class="demo">
+      <sidebar-menu
+        :menu="menu"
+        :collapsed="collapsed"
+        :theme="selectedTheme"
+        :show-one-child="true"
+        @toggle-collapse="onToggleCollapse"
+        @item-click="onItemClick"
+      />
       <div class="container">
         <h1>
           vue-sidebar-menu
@@ -30,18 +38,23 @@
         <hr style="margin: 50px 0px;border: 1px solid #e3e3e3;">
         <router-view />
       </div>
-      <sidebar-menu
-        :menu="menu"
-        :collapsed="collapsed"
-        :theme="selectedTheme"
-        :show-one-child="true"
-        @toggle-collapse="onToggleCollapse"
-        @item-click="onItemClick"
-      />
       <div
         v-if="isOnMobile && !collapsed"
         class="sidebar-overlay"
         @click="collapsed = true"
+      />
+    </div>
+    <div class="right-sidebar">
+      <sidebar-menu
+        :menu="addHRefHash(menu)"
+        :relative="true"
+        :collapsed="collapsed"
+        :disable-vue-router="true"
+        :use-location-polling="true"
+        :theme="selectedTheme"
+        :show-one-child="true"
+        @toggle-collapse="onToggleCollapse"
+        @item-click="onItemClick"
       />
     </div>
   </div>
@@ -209,6 +222,18 @@ export default {
         this.isOnMobile = false
         this.collapsed = false
       }
+    },
+    addHRefHash (menu) {
+      return menu.map((menuItem) => {
+        let newItem = { ...menuItem }
+        if (newItem.href) {
+          newItem.href = '/#' + newItem.href
+        }
+        if (newItem.child) {
+          newItem.child = this.addHRefHash(newItem.child)
+        }
+        return newItem
+      })
     }
   }
 }
@@ -230,15 +255,22 @@ body {
   color: #262626;
 }
 
+.right-sidebar {
+  grid-area: right-sidebar;
+}
+
 #demo {
-  padding-left: 350px;
   transition: 0.3s ease;
+  display: grid;
+  grid-template-columns: 350px 1fr 350px;
+  grid-template-rows: auto;
+  grid-template-areas: "left-sidebar main right-sidebar";
 }
 #demo.collapsed {
-  padding-left: 50px;
+  grid-template-columns: 50px 1fr 50px;
 }
 #demo.onmobile {
-  padding-left: 50px;
+  grid-template-columns: 50px 1fr 50px;
 }
 
 .sidebar-overlay {
@@ -253,6 +285,7 @@ body {
 }
 
 .demo {
+  grid-area: main;
   padding: 50px;
 }
 

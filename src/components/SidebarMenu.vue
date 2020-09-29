@@ -25,6 +25,8 @@
           :rtl="rtl"
           :mobile-item="mobileItem"
           :disable-hover="disableHover"
+          :use-location-polling="useLocationPolling"
+          :disable-vue-router="disableVueRouter"
           @set-mobile-item="setMobileItem"
           @unset-mobile-item="unsetMobileItem"
         >
@@ -47,6 +49,8 @@
           :is-collapsed="isCollapsed"
           :show-child="showChild"
           :rtl="rtl"
+          :use-location-polling="useLocationPolling"
+          :disable-vue-router="disableVueRouter"
         >
           <slot
             slot="dropdown-icon"
@@ -126,6 +130,14 @@ export default {
       default: false
     },
     disableHover: {
+      type: Boolean,
+      default: false
+    },
+    useLocationPolling: {
+      type: Boolean,
+      default: false
+    },
+    disableVueRouter: {
       type: Boolean,
       default: false
     }

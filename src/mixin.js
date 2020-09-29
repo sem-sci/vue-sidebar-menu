@@ -14,20 +14,26 @@ export const itemMixin = {
   created () {
     if (this.item.header || this.item.component) return
     this.initState()
-    if (!this.$router) {
-      this.urlPoller = setInterval(() => {
-        if (this.oldUrl !== window.location.href) {
-          this.oldUrl = window.location.href
-          this.initState()
-        }
-      }, 300)
-      // window.addEventListener('hashchange', this.initState)
+
+    if (!this.useVueRouter) {
+      if (this.useLocationPolling) {
+        this.urlPoller = setInterval(() => {
+          if (this.oldUrl !== window.location.href) {
+            this.oldUrl = window.location.href
+            this.initState()
+          }
+        }, 300)
+      } else {
+        window.addEventListener('hashchange', this.initState)
+      }
     }
   },
   destroyed () {
-    if (!this.$router) {
-      clearInterval(this.urlPoller);
-      // window.removeEventListener('hashchange', this.initState)
+    if (this.urlPoller) {
+      clearInterval(this.urlPoller)
+    }
+    if ((!this.useVueRouter) && !this.useLocationPolling) {
+      window.removeEventListener('hashchange', this.onHashChange)
     }
   },
   methods: {
@@ -45,7 +51,7 @@ export const itemMixin = {
     },
     isAliasActive (item) {
       if (item.alias) {
-        const current = this.$router ? this.$route.fullPath : window.location.pathname + window.location.search + window.location.hash
+        const current = this.useVueRouter ? this.$route.fullPath : window.location.pathname + window.location.search + window.location.hash
         if (Array.isArray(item.alias)) {
           return item.alias.some(alias => {
             return pathToRegexp(alias).test(current)
@@ -58,7 +64,7 @@ export const itemMixin = {
     },
     matchRoute ({ href, exactPath }) {
       if (!href) return false
-      if (this.$router) {
+      if (this.useVueRouter) {
         const { route } = this.$router.resolve(href)
         return exactPath ? route.path === this.$route.path : this.matchExactRoute(href)
       } else {
@@ -67,7 +73,7 @@ export const itemMixin = {
     },
     matchExactRoute (href) {
       if (!href) return false
-      if (this.$router) {
+      if (this.useVueRouter) {
         const { route } = this.$router.resolve(href)
         return route.fullPath === this.$route.fullPath
       } else {
@@ -138,8 +144,11 @@ export const itemMixin = {
     }
   },
   computed: {
+    useVueRouter () {
+      return this.$router && !this.disableVueRouter
+    },
     isRouterLink () {
-      return (this.$router && this.item && this.item.href !== undefined && !this.item.external) === true
+      return (this.useVueRouter && this.item && this.item.href !== undefined && !this.item.external) === true
     },
     isFirstLevel () {
       return this.level === 1
@@ -189,10 +198,12 @@ export const itemMixin = {
   },
   watch: {
     $route () {
-      setTimeout(() => {
-        if (this.item.header || this.item.component) return
-        this.initState()
-      }, 1)
+      if (!this.disableVueRouter) {
+        setTimeout(() => {
+          if (this.item.header || this.item.component) return
+          this.initState()
+        }, 1)
+      }
     },
     item (newItem, item) {
       this.emitItemUpdate(newItem, item)
