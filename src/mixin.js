@@ -6,21 +6,28 @@ export const itemMixin = {
       active: false,
       exactActive: false,
       itemShow: false,
-      itemHover: false
+      itemHover: false,
+      urlPoller: undefined,
+      oldUrl: window.location.href
     }
   },
   created () {
     if (this.item.header || this.item.component) return
     this.initState()
-  },
-  mounted () {
     if (!this.$router) {
-      window.addEventListener('hashchange', this.initState)
+      this.urlPoller = setInterval(() => {
+        if (this.oldUrl !== window.location.href) {
+          this.oldUrl = window.location.href
+          this.initState()
+        }
+      }, 300)
+      // window.addEventListener('hashchange', this.initState)
     }
   },
   destroyed () {
     if (!this.$router) {
-      window.removeEventListener('hashchange', this.initState)
+      clearInterval(this.urlPoller);
+      // window.removeEventListener('hashchange', this.initState)
     }
   },
   methods: {
