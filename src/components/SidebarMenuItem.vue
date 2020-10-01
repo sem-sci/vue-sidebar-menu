@@ -14,8 +14,7 @@
   </div>
   <div
     v-else-if="!isItemHidden"
-    class="vsm--item"
-    :class="[{'vsm--item_open' : show}]"
+    :class="itemClass"
     v-on="disableHover && isCollapsed ? { click: mouseEnterEvent } : { mouseover: mouseEnterEvent }"
     @mouseout="mouseLeaveEvent"
   >

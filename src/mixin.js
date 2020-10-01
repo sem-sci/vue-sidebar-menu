@@ -176,6 +176,17 @@ export const itemMixin = {
         this.item.class
       ]
     },
+    itemClass () {
+      return [
+        'vsm--item',
+        { 'vsm--item_open': this.show },
+        !this.isMobileItem ? `vsm--item_level-${this.level}` : '',
+        { 'vsm--item_mobile-item': this.isMobileItem },
+        { 'vsm--item_hover': this.hover },
+        { 'vsm--item_disabled': this.item.disabled },
+        this.item.class
+      ]
+    },
     isItemHidden () {
       if (this.isCollapsed) {
         if (this.item.hidden && this.item.hiddenOnCollapse === undefined) {
