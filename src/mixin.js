@@ -87,10 +87,12 @@ export const itemMixin = {
 
       if (this.isPopout && !this.isMobileItem) {
         if (!this.mobileItem || this.mobileItem !== this.item) {
-          this.$emit('set-mobile-item', { item: this.item, itemEl: event.currentTarget.offsetParent })
+          this.emitSetMobileItem({ item: this.item, itemEl: event.currentTarget.offsetParent })
+          // this.$emit('set-mobile-item', { item: this.item, itemEl: event.currentTarget.offsetParent })
         }
         if (this.hover || this.item.child) return
-        this.$emit('unset-mobile-item', true)
+        this.emitUnsetMobileItem(true)
+        // this.$emit('unset-mobile-item', true)
       }
 
       if (this.showChild || this.isMobileItem) return
@@ -133,17 +135,26 @@ export const itemMixin = {
       event.stopPropagation()
       if (this.item.disabled) return
       if (!this.itemHover && !this.isMobileItem && !this.isMobileItemChild && this.mobileItem !== this.item) {
-        this.$emit('unset-mobile-item')
+        this.emitUnsetMobileItem()
+        // this.$emit('unset-mobile-item')
       }
       this.itemHover = true
       if (this.hover) return
-      if (this.isPopout && !this.isMobileItem) {
-        this.$emit('set-mobile-item', { item: this.item, itemEl: event.currentTarget })
+      if (this.isPopout && !this.isMobileItem && !this.isMobileItemChild) {
+        this.emitSetMobileItem({ item: this.item, itemEl: event.currentTarget })
+        // this.$emit('set-mobile-item', { item: this.item, itemEl: event.currentTarget })
       }
     },
     mouseLeaveEvent (event) {
       event.stopPropagation()
       this.itemHover = false
+    },
+    emitSetMobileItem ({ item, itemEl }) {
+      console.log('emit setMobileItem', item, itemEl)
+      this.$emit('set-mobile-item', { 'item': item, 'itemEl': itemEl })
+    },
+    emitUnsetMobileItem (delayed) {
+      this.$emit('unset-mobile-item', delayed)
     }
   },
   computed: {

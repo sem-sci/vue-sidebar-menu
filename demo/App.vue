@@ -148,7 +148,6 @@ export default {
         {
           title: 'Multiple Level',
           icon: 'fa fa-list-alt',
-          isPopout: true,
           child: [
             {
               title: 'page'

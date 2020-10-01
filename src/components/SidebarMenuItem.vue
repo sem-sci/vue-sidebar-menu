@@ -79,6 +79,8 @@
                 :use-location-polling="useLocationPolling"
                 :disable-vue-router="disableVueRouter"
                 :is-mobile-item-child="isMobileItemChild || isMobileItem"
+                @set-mobile-item="emitSetMobileItem"
+                @unset-mobile-item="emitUnsetMobileItem"
               >
                 <slot
                   slot="dropdown-icon"
