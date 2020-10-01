@@ -147,12 +147,14 @@ export default {
         {
           title: 'Multiple Level',
           icon: 'fa fa-list-alt',
+          isPopout: true,
           child: [
             {
               title: 'page'
             },
             {
               title: 'Level 2 ',
+              isPopout: true,
               child: [
                 {
                   title: 'page'

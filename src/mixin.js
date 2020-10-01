@@ -68,7 +68,7 @@ export const itemMixin = {
         const { route } = this.$router.resolve(href)
         return exactPath ? route.path === this.$route.path : this.matchExactRoute(href)
       } else {
-        return exactPath ? href === window.location.pathname : this.matchExactRoute(href)
+        return exactPath ? href.indexOf(window.location.pathname) === 0 : this.matchExactRoute(href)
       }
     },
     matchExactRoute (href) {
@@ -77,7 +77,7 @@ export const itemMixin = {
         const { route } = this.$router.resolve(href)
         return route.fullPath === this.$route.fullPath
       } else {
-        return href === window.location.pathname + window.location.search + window.location.hash
+        return href.indexOf(window.location.pathname + window.location.search + window.location.hash) === 0
       }
     },
     clickEvent (event) {
@@ -85,7 +85,7 @@ export const itemMixin = {
 
       this.emitItemClick(event, this.item, this)
 
-      if (this.isCollapsed && this.isFirstLevel && !this.isMobileItem) {
+      if (this.isPopout && !this.isMobileItem) {
         if (!this.mobileItem || this.mobileItem !== this.item) {
           this.$emit('set-mobile-item', { item: this.item, itemEl: event.currentTarget.offsetParent })
         }
@@ -132,9 +132,12 @@ export const itemMixin = {
     mouseEnterEvent (event) {
       event.stopPropagation()
       if (this.item.disabled) return
+      if (!this.itemHover && !this.isMobileItem && !this.isMobileItemChild && this.mobileItem !== this.item) {
+        this.$emit('unset-mobile-item')
+      }
       this.itemHover = true
       if (this.hover) return
-      if (this.isCollapsed && this.isFirstLevel && !this.isMobileItem) {
+      if (this.isPopout && !this.isMobileItem) {
         this.$emit('set-mobile-item', { item: this.item, itemEl: event.currentTarget })
       }
     },
@@ -152,6 +155,9 @@ export const itemMixin = {
     },
     isFirstLevel () {
       return this.level === 1
+    },
+    isPopout () {
+      return (this.isCollapsed && this.isFirstLevel) || (this.item.isPopout && !this.isMobileItemChild)
     },
     show () {
       if (!this.item.child) return false
@@ -186,7 +192,7 @@ export const itemMixin = {
       return this.item.href
     },
     hover () {
-      if (this.isCollapsed && this.isFirstLevel) {
+      if (this.isPopout) {
         return this.item === this.mobileItem
       }
       return this.itemHover
@@ -224,7 +230,7 @@ export const animationMixin = {
       el.style.height = 'auto'
     },
     expandBeforeLeave (el) {
-      if (this.isCollapsed && this.isFirstLevel) {
+      if (this.isPopout) {
         el.style.display = 'none'
         return
       }

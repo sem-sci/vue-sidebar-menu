@@ -79,6 +79,7 @@
                 :is-collapsed="isCollapsed"
                 :use-location-polling="useLocationPolling"
                 :disable-vue-router="disableVueRouter"
+                :is-mobile-item-child="isMobileItemChild || isMobileItem"
               >
                 <slot
                   slot="dropdown-icon"
@@ -120,6 +121,10 @@ export default {
       type: Boolean
     },
     isMobileItem: {
+      type: Boolean,
+      default: false
+    },
+    isMobileItemChild: {
       type: Boolean,
       default: false
     },

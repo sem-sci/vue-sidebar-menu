@@ -37,12 +37,11 @@
         </sidebar-menu-item>
       </div>
       <div
-        v-if="isCollapsed"
+        v-if="mobileItem"
         class="vsm--mobile-item"
         :style="mobileItemStyle.item"
       >
         <sidebar-menu-item
-          v-if="mobileItem"
           :item="mobileItem"
           :is-mobile-item="true"
           :mobile-item-style="mobileItemStyle"
@@ -59,7 +58,6 @@
         </sidebar-menu-item>
         <transition name="slide-animation">
           <div
-            v-if="mobileItem"
             class="vsm--mobile-bg"
             :style="mobileItemStyle.background"
           />
@@ -178,7 +176,7 @@ export default {
           this.rtl && { 'direction': 'rtl' },
           { 'z-index': 0 },
           { 'width': `${this.parentWidth - this.parentOffsetLeft}px` },
-          { 'max-width': this.width }
+          this.isCollapsed ? { 'max-width': this.width } : { 'max-width': 'calc(' + this.width + '*2 - ' + this.widthCollapsed + ')' }
         ],
         dropdown: [
           { 'position': 'absolute' },
