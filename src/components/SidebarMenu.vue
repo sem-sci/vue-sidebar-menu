@@ -174,14 +174,14 @@ export default {
           this.rtl ? { 'right': '0px' } : { 'left': '0px' },
           this.rtl ? { 'padding-right': this.sidebarWidth } : { 'padding-left': this.sidebarWidth },
           this.rtl && { 'direction': 'rtl' },
-          { 'z-index': 0 },
-          { 'width': `${this.parentWidth - this.parentOffsetLeft}px` },
+          { 'width': `${window.innerWidth}px` },
           this.isCollapsed ? { 'max-width': this.width } : { 'max-width': 'calc(' + this.width + '*2 - ' + this.widthCollapsed + ')' }
         ],
         dropdown: [
           { 'position': 'absolute' },
           { 'top': `${this.mobileItemHeight}px` },
-          { 'width': '100%' },
+          { 'width': `${window.innerWidth}px` },
+          { 'max-width': 'calc(' + this.width + ' - ' + this.widthCollapsed + ')' },
           { 'max-height': `${this.parentHeight - (this.mobileItemPos + this.mobileItemHeight) - this.parentOffsetTop}px` },
           { 'overflow-y': 'auto' }
         ],
@@ -192,7 +192,6 @@ export default {
           { 'right': '0px' },
           { 'width': '100%' },
           { 'height': `${this.mobileItemHeight}px` },
-          { 'z-index': -1 }
         ]
       }
     }

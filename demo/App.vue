@@ -260,12 +260,13 @@ body {
 
 .right-sidebar {
   grid-area: right-sidebar;
+  height: 100%;
 }
 
 #demo {
   transition: 0.3s ease;
   display: grid;
-  grid-template-columns: 350px 1fr 350px;
+  grid-template-columns: 350px 1fr 700px;
   grid-template-rows: auto;
   grid-template-areas: "left-sidebar main right-sidebar";
 }
