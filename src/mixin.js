@@ -68,7 +68,7 @@ export const itemMixin = {
         const { route } = this.$router.resolve(href)
         return exactPath ? route.path === this.$route.path : this.matchExactRoute(href)
       } else {
-        return exactPath ? href.indexOf(window.location.pathname) === 0 : this.matchExactRoute(href)
+        return exactPath ? href && href.indexOf(window.location.pathname) === 0 : this.matchExactRoute(href)
       }
     },
     matchExactRoute (href) {
@@ -77,7 +77,7 @@ export const itemMixin = {
         const { route } = this.$router.resolve(href)
         return route.fullPath === this.$route.fullPath
       } else {
-        return href.indexOf(window.location.pathname + window.location.search + window.location.hash) === 0
+        return href && href.indexOf(window.location.pathname + window.location.search + window.location.hash) === 0
       }
     },
     clickEvent (event) {
@@ -111,7 +111,7 @@ export const itemMixin = {
       this.exactActive = this.isLinkExactActive(this.item)
     },
     initShowState () {
-      if (this.item.child && !this.showChild) {
+      if (this.item.child && !this.showChild && !this.item.isPopout) {
         if (this.showOneChild) {
           if (this.active) {
             this.emitActiveShow(this.item)

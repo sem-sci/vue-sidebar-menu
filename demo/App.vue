@@ -129,6 +129,7 @@ export default {
         },
         {
           href: '/page',
+          isPopout: true,
           title: 'Dropdown Page',
           icon: 'fa fa-list-ul',
           child: [
