@@ -182,6 +182,22 @@ export default {
                   ]
                 }
               ]
+            },
+            {
+              title: 'Yet Another Level 2',
+              child: [
+                {
+                  title: 'Level 3',
+                  child: [
+                    {
+                      title: 'Page'
+                    },
+                    {
+                      title: 'Page'
+                    }
+                  ]
+                }
+              ]
             }
           ]
         }

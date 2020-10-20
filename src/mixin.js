@@ -68,7 +68,7 @@ export const itemMixin = {
         const { route } = this.$router.resolve(href)
         return exactPath ? route.path === this.$route.path : this.matchExactRoute(href)
       } else {
-        return exactPath ? href === window.location.pathname : this.matchExactRoute(href)
+        return exactPath ? href === window.location.pathname || href === window.location.pathname + '/' : this.matchExactRoute(href)
       }
     },
     matchExactRoute (href) {
@@ -77,7 +77,7 @@ export const itemMixin = {
         const { route } = this.$router.resolve(href)
         return route.fullPath === this.$route.fullPath
       } else {
-        return href === window.location.pathname + window.location.search + window.location.hash
+        return href === window.location.pathname + window.location.search + window.location.hash || href === window.location.pathname + '/' + window.location.search + window.location.hash
       }
     },
     clickEvent (event) {
@@ -88,14 +88,12 @@ export const itemMixin = {
       if (this.isPopout && !this.isMobileItem) {
         if (!this.mobileItem || this.mobileItem !== this.item) {
           this.emitSetMobileItem({ item: this.item, itemEl: event.currentTarget.offsetParent })
-          // this.$emit('set-mobile-item', { item: this.item, itemEl: event.currentTarget.offsetParent })
         }
         if (this.hover || this.item.child) return
         this.emitUnsetMobileItem(true)
-        // this.$emit('unset-mobile-item', true)
       }
 
-      if (this.showChild || this.isMobileItem) return
+      // if (this.showChild || this.isMobileItem) return
       if (this.item.child && (!this.item.href || this.exactActive)) {
         if (this.showOneChild) {
           this.activeShow === this.item ? this.emitActiveShow(null) : this.emitActiveShow(this.item)
@@ -136,13 +134,11 @@ export const itemMixin = {
       if (this.item.disabled) return
       if (!this.itemHover && !this.isMobileItem && !this.isMobileItemChild && this.mobileItem !== this.item) {
         this.emitUnsetMobileItem()
-        // this.$emit('unset-mobile-item')
       }
       this.itemHover = true
       if (this.hover) return
       if (this.isPopout && !this.isMobileItem && !this.isMobileItemChild) {
         this.emitSetMobileItem({ item: this.item, itemEl: event.currentTarget })
-        // this.$emit('set-mobile-item', { item: this.item, itemEl: event.currentTarget })
       }
     },
     mouseLeaveEvent (event) {
@@ -150,7 +146,6 @@ export const itemMixin = {
       this.itemHover = false
     },
     emitSetMobileItem ({ item, itemEl }) {
-      console.log('emit setMobileItem', item, itemEl)
       this.$emit('set-mobile-item', { 'item': item, 'itemEl': itemEl })
     },
     emitUnsetMobileItem (delayed) {
