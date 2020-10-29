@@ -73,6 +73,7 @@
                 :key="index"
                 :item="subItem"
                 :level="level+1"
+                :active-show="activeShow"
                 :show-child="showChild"
                 :rtl="rtl"
                 :is-collapsed="isCollapsed"

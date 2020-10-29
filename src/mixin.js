@@ -68,7 +68,7 @@ export const itemMixin = {
         const { route } = this.$router.resolve(href)
         return exactPath ? route.path === this.$route.path : this.matchExactRoute(href)
       } else {
-        return exactPath ? href === window.location.pathname || href === window.location.pathname + '/' : this.matchExactRoute(href)
+        return exactPath ? window.location.pathname.startsWith(href) : this.matchExactRoute(href)
       }
     },
     matchExactRoute (href) {
@@ -77,7 +77,7 @@ export const itemMixin = {
         const { route } = this.$router.resolve(href)
         return route.fullPath === this.$route.fullPath
       } else {
-        return href === window.location.pathname + window.location.search + window.location.hash || href === window.location.pathname + '/' + window.location.search + window.location.hash
+        return (window.location.pathname + window.location.search + window.location.hash).startsWith(href)
       }
     },
     clickEvent (event) {
