@@ -230,6 +230,10 @@ export const itemMixin = {
     },
     item (newItem, item) {
       this.emitItemUpdate(newItem, item)
+      setTimeout(() => {
+        if (this.item.header || this.item.component) return
+        this.initState()
+      }, 1)
     },
     activeShow () {
       this.itemShow = this.item === this.activeShow

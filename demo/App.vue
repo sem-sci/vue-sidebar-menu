@@ -157,10 +157,18 @@ export default {
               isPopout: true,
               child: [
                 {
-                  title: 'page'
+                  title: 'Page 01',
+                  onClick: () => {
+                    console.log("changeing href", this.menu[this.menu.length - 1].child[3].child[0].child[1].href);
+                    this.menu[this.menu.length - 1].child[3].child[0].child[1].href = '/al2/level-3-page-1'
+                  }
                 },
                 {
-                  title: 'Page'
+                  title: 'Page 02',
+                  onClick: () => {
+                    console.log("changeing href", this.menu[this.menu.length - 1].child[3].child[0].child[1].href);
+                    this.menu[this.menu.length - 1].child[3].child[0].child[1].href = '/al2/level-3-page-2'
+                  }
                 }
               ]
             },
@@ -174,10 +182,12 @@ export default {
                   title: 'Level 3',
                   child: [
                     {
-                      title: 'Page'
+                      href: '/al2/level-3-page-1',
+                      title: 'Page 01',
                     },
                     {
-                      title: 'Page'
+                      href: '/al2/level-3-page-2',
+                      title: 'Page 02',
                     }
                   ]
                 }
@@ -190,10 +200,12 @@ export default {
                   title: 'Level 3',
                   child: [
                     {
-                      title: 'Page'
+                      href: '/yal2/level-3-page-1',
+                      title: 'Page 01',
                     },
                     {
-                      title: 'Page'
+                      href: '/yal2/level-3-page-2',
+                      title: 'Page 02',
                     }
                   ]
                 }
