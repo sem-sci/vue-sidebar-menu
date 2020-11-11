@@ -1,7 +1,5 @@
 <script>
-import Vue from 'vue'
-
-const LocationWatcher = new Vue({
+export default {
   props: {
     pollInterval: {
       type: Number,
@@ -63,7 +61,5 @@ const LocationWatcher = new Vue({
       }
     }
   }
-})
-
-export default LocationWatcher
+}
 </script>
