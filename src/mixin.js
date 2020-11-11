@@ -1,42 +1,31 @@
 import pathToRegexp from 'path-to-regexp'
+import LocationWatcher from './components/LocationWatcher'
 
 export const itemMixin = {
   data () {
     return {
-      active: false,
-      exactActive: false,
       itemShow: false,
       itemHover: false,
-      urlPoller: undefined,
-      oldUrl: window.location.href
+      location: null
     }
   },
   created () {
-    if (this.item.header || this.item.component) return
-    this.initState()
-
-    if (!this.useVueRouter) {
-      if (this.useLocationPolling) {
-        this.urlPoller = setInterval(() => {
-          if (this.oldUrl !== window.location.href) {
-            this.oldUrl = window.location.href
-            this.initState()
-          }
-        }, 300)
-      } else {
-        window.addEventListener('hashchange', this.initState)
-      }
-    }
+    LocationWatcher.addChangeListener(this.onLocationChanged)
+    this.onLocationChanged()
   },
   destroyed () {
-    if (this.urlPoller) {
-      clearInterval(this.urlPoller)
-    }
-    if ((!this.useVueRouter) && !this.useLocationPolling) {
-      window.removeEventListener('hashchange', this.onHashChange)
-    }
+    LocationWatcher.removeChangeListener(this.onLocationChanged)
   },
   methods: {
+    onLocationChanged () {
+      this.location = { href: LocationWatcher.href, pathname: LocationWatcher.pathname, hash: LocationWatcher.hash, search: LocationWatcher.search }
+      this.initShowState()
+    },
+    isShowActive (item) {
+      return this.activeShow === item || (item.child && item.child.some(childItem => {
+        return this.isShowActive(childItem)
+      }))
+    },
     isLinkActive (item) {
       return this.matchRoute(item) || this.isChildActive(item.child) || this.isAliasActive(item)
     },
@@ -51,7 +40,7 @@ export const itemMixin = {
     },
     isAliasActive (item) {
       if (item.alias) {
-        const current = this.useVueRouter ? this.$route.fullPath : window.location.pathname + window.location.search + window.location.hash
+        const current = this.useVueRouter ? this.$route.fullPath : this.location.pathname + this.location.search + this.location.hash
         if (Array.isArray(item.alias)) {
           return item.alias.some(alias => {
             return pathToRegexp(alias).test(current)
@@ -68,7 +57,7 @@ export const itemMixin = {
         const { route } = this.$router.resolve(href)
         return exactPath ? route.path === this.$route.path : this.matchExactRoute(href)
       } else {
-        return exactPath ? href === window.location.pathname || href === window.location.pathname + '/' : this.matchExactRoute(href)
+        return exactPath ? href === this.location.pathname || href === this.location.pathname + '/' : this.matchExactRoute(href)
       }
     },
     matchExactRoute (href) {
@@ -77,7 +66,7 @@ export const itemMixin = {
         const { route } = this.$router.resolve(href)
         return route.fullPath === this.$route.fullPath
       } else {
-        return href === window.location.pathname + window.location.search + window.location.hash || href === window.location.pathname + '/' + window.location.search + window.location.hash
+        return href === this.location.pathname + this.location.search + this.location.hash || href === this.location.pathname + '/' + this.location.search + this.location.hash
       }
     },
     clickEvent (event) {
@@ -93,7 +82,6 @@ export const itemMixin = {
         this.emitUnsetMobileItem(true)
       }
 
-      // if (this.showChild || this.isMobileItem) return
       if (this.item.child && (!this.item.href || this.exactActive)) {
         if (this.showOneChild) {
           this.activeShow === this.item ? this.emitActiveShow(null) : this.emitActiveShow(this.item)
@@ -101,14 +89,6 @@ export const itemMixin = {
           this.itemShow = !this.itemShow
         }
       }
-    },
-    initState () {
-      this.initActiveState()
-      this.initShowState()
-    },
-    initActiveState () {
-      this.active = this.isLinkActive(this.item)
-      this.exactActive = this.isLinkExactActive(this.item)
     },
     initShowState () {
       if (this.item.child && !this.showChild && !this.item.isPopout) {
@@ -217,26 +197,20 @@ export const itemMixin = {
     itemLinkTag () {
       if (!this.itemLinkHref) return 'span'
       return this.isRouterLink ? 'router-link' : 'a'
+    },
+    active () {
+      return this.isLinkActive(this.item)
+    },
+    exactActive () {
+      return this.isLinkExactActive(this.item)
     }
   },
   watch: {
-    $route () {
-      if (!this.disableVueRouter) {
-        setTimeout(() => {
-          if (this.item.header || this.item.component) return
-          this.initState()
-        }, 1)
-      }
-    },
     item (newItem, item) {
       this.emitItemUpdate(newItem, item)
-      setTimeout(() => {
-        if (this.item.header || this.item.component) return
-        this.initState()
-      }, 1)
     },
     activeShow () {
-      this.itemShow = this.item === this.activeShow
+      this.itemShow = this.isShowActive(this.item)
     }
   },
   inject: ['emitActiveShow', 'emitItemClick', 'emitItemUpdate']

@@ -74,6 +74,7 @@
                 :item="subItem"
                 :level="level+1"
                 :active-show="activeShow"
+                :show-one-child="showOneChild"
                 :show-child="showChild"
                 :rtl="rtl"
                 :is-collapsed="isCollapsed"
