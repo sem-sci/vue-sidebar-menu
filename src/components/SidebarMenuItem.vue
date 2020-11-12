@@ -71,7 +71,7 @@
               <sidebar-menu-item
                 v-for="(subItem, index) in item.child"
                 :key="index"
-                :item="subItem"
+                :menu-item="subItem"
                 :level="level+1"
                 :active-show="activeShow"
                 :show-one-child="showOneChild"
@@ -112,7 +112,7 @@ export default {
   },
   mixins: [itemMixin, animationMixin],
   props: {
-    item: {
+    menuItem: {
       type: Object,
       required: true
     },

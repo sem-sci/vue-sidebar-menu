@@ -17,7 +17,7 @@
         <sidebar-menu-item
           v-for="(item, index) in menu"
           :key="index"
-          :item="item"
+          :menu-item="item"
           :is-collapsed="isCollapsed"
           :active-show="activeShow"
           :show-one-child="showOneChild"
@@ -42,7 +42,7 @@
         :style="mobileItemStyle.item"
       >
         <sidebar-menu-item
-          :item="mobileItem"
+          :menu-item="mobileItem"
           :is-mobile-item="true"
           :mobile-item-style="mobileItemStyle"
           :is-collapsed="isCollapsed"
@@ -205,7 +205,7 @@ export default {
   },
   methods: {
     onMouseLeave () {
-      this.unsetMobileItem()
+      this.unsetMobileItem(true)
     },
     onToggleClick () {
       this.isCollapsed = !this.isCollapsed
@@ -219,6 +219,7 @@ export default {
       this.$emit('item-click', event, item, node)
     },
     setMobileItem ({ item, itemEl }) {
+      this.stopMobileTimer()
       if (this.mobileItem === item) return
       let sidebarTop = this.$el.getBoundingClientRect().top
       let itemTop = itemEl.getBoundingClientRect().top
@@ -240,7 +241,7 @@ export default {
       })
     },
     unsetMobileItem (delay) {
-      if (this.mobileItemTimeout) clearTimeout(this.mobileItemTimeout)
+      this.stopMobileTimer()
       if (!delay) {
         this.mobileItem = null
         return
@@ -248,6 +249,10 @@ export default {
       this.mobileItemTimeout = setTimeout(() => {
         this.mobileItem = null
       }, 600)
+    },
+    stopMobileTimer () {
+      if (this.mobileItemTimeout) clearTimeout(this.mobileItemTimeout)
+      this.mobileItemTimeout = null
     },
     initParentOffsets () {
       let { top: sidebarTop, left: sidebarLeft, right: sidebarRight } = this.$el.getBoundingClientRect()
@@ -276,7 +281,8 @@ export default {
     return {
       emitActiveShow: this.onActiveShow,
       emitItemClick: this.onItemClick,
-      emitItemUpdate: this.onItemUpdate
+      emitItemUpdate: this.onItemUpdate,
+      emitStopMobileTimer: this.stopMobileTimer
     }
   }
 }

@@ -6,12 +6,18 @@ export const itemMixin = {
     return {
       itemShow: false,
       itemHover: false,
-      location: null
+      location: null,
+      item: null,
+      prevExactActive: false
     }
   },
   created () {
+    this.item = this.menuItem
     LocationWatcher.addChangeListener(this.onLocationChanged)
     this.onLocationChanged()
+    if (this.item.child && !this.showChild && !this.item.isPopout) {
+      this.itemShow = this.active
+    }
   },
   destroyed () {
     LocationWatcher.removeChangeListener(this.onLocationChanged)
@@ -19,7 +25,6 @@ export const itemMixin = {
   methods: {
     onLocationChanged () {
       this.location = { href: LocationWatcher.href, pathname: LocationWatcher.pathname, hash: LocationWatcher.hash, search: LocationWatcher.search }
-      this.initShowState()
     },
     isShowActive (item) {
       return this.activeShow === item || (item.child && item.child.some(childItem => {
@@ -87,25 +92,7 @@ export const itemMixin = {
           this.activeShow === this.item ? this.emitActiveShow(null) : this.emitActiveShow(this.item)
         } else {
           this.itemShow = !this.itemShow
-        }
-      }
-    },
-    initShowState () {
-      if (this.item.child && !this.showChild && !this.item.isPopout) {
-        if (this.showOneChild) {
-          if (this.active) {
-            this.emitActiveShow(this.item)
-            this.itemShow = true
-          } else {
-            if (this.item === this.activeShow) {
-              this.emitActiveShow(null)
-              this.itemShow = false
-            }
-          }
-        } else {
-          if (this.active) {
-            this.itemShow = true
-          }
+          console.log('click(): set itemShow', this.item.title, this.itemShow)
         }
       }
     },
@@ -113,7 +100,9 @@ export const itemMixin = {
       event.stopPropagation()
       if (this.item.disabled) return
       if (!this.itemHover && !this.isMobileItem && !this.isMobileItemChild && this.mobileItem !== this.item) {
-        this.emitUnsetMobileItem()
+        this.emitUnsetMobileItem(!this.isPopout)
+      } else if (this.isMobileItem || this.isMobileItemChild) {
+        this.emitStopMobileTimer()
       }
       this.itemHover = true
       if (this.hover) return
@@ -202,18 +191,28 @@ export const itemMixin = {
       return this.isLinkActive(this.item)
     },
     exactActive () {
-      return this.isLinkExactActive(this.item)
+      const exactActive = this.isLinkExactActive(this.item)
+      if (exactActive && !this.prevExactActive) {
+        if (this.showOneChild && this.activeShow !== this.item) {
+          this.emitActiveShow(this.item)
+        }
+      }
+      this.prevExactActive = exactActive
+      return exactActive
     }
   },
   watch: {
-    item (newItem, item) {
-      this.emitItemUpdate(newItem, item)
+    menuItem (newItem, oldItem) {
+      this.item = newItem
+      this.emitItemUpdate(newItem, oldItem)
     },
-    activeShow () {
-      this.itemShow = this.isShowActive(this.item)
+    activeShow (newItem) {
+      if (newItem) {
+        this.itemShow = this.isShowActive(this.item)
+      }
     }
   },
-  inject: ['emitActiveShow', 'emitItemClick', 'emitItemUpdate']
+  inject: ['emitActiveShow', 'emitItemClick', 'emitItemUpdate', 'emitStopMobileTimer']
 }
 
 export const animationMixin = {
@@ -225,10 +224,6 @@ export const animationMixin = {
       el.style.height = 'auto'
     },
     expandBeforeLeave (el) {
-      if (this.isPopout) {
-        el.style.display = 'none'
-        return
-      }
       el.style.height = el.scrollHeight + 'px'
     }
   }
