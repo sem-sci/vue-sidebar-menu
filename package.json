@@ -1,7 +1,7 @@
 {
   "name": "@semsci/vue-sidebar-menu",
   "description": "A fork of Vue.js Sidebar Menu Component",
-  "version": "4.7.17",
+  "version": "4.7.18",
   "license": "MIT",
   "main": "dist/vue-sidebar-menu.js",
   "types": "./types/index.d.ts",
@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "path-to-regexp": "^1.7.0",
-    "vue": "^2.6.11"
+    "vue": "^2.6.12"
   },
   "postcss": {
     "plugins": {
@@ -65,7 +65,7 @@
     "sass-loader": "^6.0.6",
     "vue-loader": "^15.5.0",
     "vue-router": "^3.0.2",
-    "vue-template-compiler": "^2.6.11",
+    "vue-template-compiler": "^2.6.12",
     "webpack": "^4.42.0",
     "webpack-cli": "^3.3.11",
     "webpack-dev-server": "^3.11.0",
