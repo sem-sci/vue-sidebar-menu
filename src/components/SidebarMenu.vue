@@ -8,7 +8,6 @@
     <slot name="header" />
     <div
       class="vsm--scroll-wrapper"
-      :style="isCollapsed && [rtl ? {'margin-left': '-17px'} : {'margin-right': '-17px'}]"
     >
       <div
         class="vsm--list"
@@ -101,7 +100,7 @@ export default {
     },
     widthCollapsed: {
       type: String,
-      default: '50px'
+      default: '60px'
     },
     showChild: {
       type: Boolean,
