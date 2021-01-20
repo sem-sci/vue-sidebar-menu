@@ -199,7 +199,6 @@ export default {
     collapsed (val) {
       if (this.isCollapsed === this.collapsed) return
       this.isCollapsed = val
-      this.unsetMobileItem()
     }
   },
   methods: {
@@ -208,7 +207,6 @@ export default {
     },
     onToggleClick () {
       this.isCollapsed = !this.isCollapsed
-      this.unsetMobileItem()
       this.$emit('toggle-collapse', this.isCollapsed)
     },
     onActiveShow (item) {
@@ -216,6 +214,9 @@ export default {
     },
     onItemClick (event, item, node) {
       this.$emit('item-click', event, item, node)
+      if (!node.item.child && !node.showOneChild && (node.isMobileItem || node.isMobileItemChild)) {
+         this.unsetMobileItem()
+      }
     },
     setMobileItem ({ item, itemEl }) {
       this.stopMobileTimer()
@@ -231,7 +232,6 @@ export default {
       let height = itemLinkEl.offsetHeight
       let positionTop = itemTop - sidebarTop + paddingTop + marginTop
 
-      this.unsetMobileItem()
       this.$nextTick(() => {
         this.initParentOffsets()
         this.mobileItem = item
@@ -240,14 +240,15 @@ export default {
       })
     },
     unsetMobileItem (delay) {
-      this.stopMobileTimer()
       if (!delay) {
         this.mobileItem = null
         return
       }
-      this.mobileItemTimeout = setTimeout(() => {
-        this.mobileItem = null
-      }, 600)
+      if (!this.mobileItemTimeout) {
+         this.mobileItemTimeout = setTimeout(() => {
+         this.mobileItem = null
+         }, 600)
+      }
     },
     stopMobileTimer () {
       if (this.mobileItemTimeout) clearTimeout(this.mobileItemTimeout)

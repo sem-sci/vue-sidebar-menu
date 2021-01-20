@@ -92,16 +92,16 @@ export const itemMixin = {
           this.activeShow === this.item ? this.emitActiveShow(null) : this.emitActiveShow(this.item)
         } else {
           this.itemShow = !this.itemShow
-          console.log('click(): set itemShow', this.item.title, this.itemShow)
         }
       }
     },
     mouseEnterEvent (event) {
       event.stopPropagation()
       if (this.item.disabled) return
-      if (!this.itemHover && !this.isMobileItem && !this.isMobileItemChild && this.mobileItem !== this.item) {
-        this.emitUnsetMobileItem(!this.isPopout)
+      if (!this.itemHover && !this.isPopout && !this.isMobileItem && !this.isMobileItemChild && this.mobileItem !== this.item) {
+        this.emitUnsetMobileItem(true)
       } else if (this.isMobileItem || this.isMobileItemChild) {
+         this.emitUnsetMobileItem(true)
         this.emitStopMobileTimer()
       }
       this.itemHover = true
