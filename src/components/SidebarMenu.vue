@@ -207,6 +207,7 @@ export default {
     },
     onToggleClick () {
       this.isCollapsed = !this.isCollapsed
+      this.unsetMobileItem()
       this.$emit('toggle-collapse', this.isCollapsed)
     },
     onActiveShow (item) {
@@ -241,6 +242,7 @@ export default {
     },
     unsetMobileItem (delay) {
       if (!delay) {
+        this.stopMobileTimer()
         this.mobileItem = null
         return
       }

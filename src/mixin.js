@@ -101,7 +101,7 @@ export const itemMixin = {
       if (!this.itemHover && !this.isPopout && !this.isMobileItem && !this.isMobileItemChild && this.mobileItem !== this.item) {
         this.emitUnsetMobileItem(true)
       } else if (this.isMobileItem || this.isMobileItemChild) {
-         this.emitUnsetMobileItem(true)
+        this.emitUnsetMobileItem(true)
         this.emitStopMobileTimer()
       }
       this.itemHover = true
