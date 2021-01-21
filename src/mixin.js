@@ -94,6 +94,9 @@ export const itemMixin = {
           this.itemShow = !this.itemShow
         }
       }
+      this.$nextTick(() => {
+         this.$refs.parent.$el.scrollIntoView({behavior: 'smooth'})
+      })
     },
     mouseEnterEvent (event) {
       event.stopPropagation()
@@ -102,7 +105,7 @@ export const itemMixin = {
         this.emitUnsetMobileItem(true)
       } else if (this.isMobileItem || this.isMobileItemChild) {
         this.emitUnsetMobileItem(true)
-        this.emitStopMobileTimer()
+        this.emitStopMobileTimerClose()
       }
       this.itemHover = true
       if (this.hover) return
@@ -212,7 +215,7 @@ export const itemMixin = {
       }
     }
   },
-  inject: ['emitActiveShow', 'emitItemClick', 'emitItemUpdate', 'emitStopMobileTimer']
+  inject: ['emitActiveShow', 'emitItemClick', 'emitItemUpdate', 'emitStopMobileTimerClose']
 }
 
 export const animationMixin = {
