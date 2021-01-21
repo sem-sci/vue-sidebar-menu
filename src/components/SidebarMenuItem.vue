@@ -25,6 +25,7 @@
       :class="itemLinkClass"
       :attributes="item.attributes"
       @click.native="clickEvent"
+      ref="parent"
     >
       <sidebar-menu-icon
         v-if="item.icon && !isMobileItem"
@@ -54,13 +55,13 @@
     </sidebar-menu-link>
     <template v-if="item.child">
       <template v-if="(isCollapsed && !isFirstLevel) || !isCollapsed || isMobileItem">
-        <transition
+        <!-- <transition
           :appear="isMobileItem"
           name="expand"
           @enter="expandEnter"
           @afterEnter="expandAfterEnter"
           @beforeLeave="expandBeforeLeave"
-        >
+        > -->
           <div
             v-if="show"
             class="vsm--dropdown"
@@ -91,7 +92,7 @@
               </sidebar-menu-item>
             </div>
           </div>
-        </transition>
+        <!-- </transition> -->
       </template>
     </template>
   </div>

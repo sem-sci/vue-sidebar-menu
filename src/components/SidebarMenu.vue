@@ -8,6 +8,8 @@
     <slot name="header" />
     <div
       class="vsm--scroll-wrapper"
+      @scroll="scrollEvent"
+      ref="testRef"
     >
       <div
         class="vsm--list"
@@ -145,7 +147,8 @@ export default {
       mobileItem: null,
       mobileItemPos: 0,
       mobileItemHeight: 0,
-      mobileItemTimeout: null,
+      mobileItemCloseTimeout: null,
+      mobileItemOpenTimeout: null,
       activeShow: null,
       parentHeight: 0,
       parentWidth: 0,
@@ -205,6 +208,9 @@ export default {
     onMouseLeave () {
       this.unsetMobileItem(true)
     },
+    scrollEvent (event) {
+      this.unsetMobileItem()
+    },
     onToggleClick () {
       this.isCollapsed = !this.isCollapsed
       this.unsetMobileItem()
@@ -220,41 +226,49 @@ export default {
       }
     },
     setMobileItem ({ item, itemEl }) {
-      this.stopMobileTimer()
-      if (this.mobileItem === item) return
-      let sidebarTop = this.$el.getBoundingClientRect().top
-      let itemTop = itemEl.getBoundingClientRect().top
-      let itemLinkEl = itemEl.children[0]
+      this.stopMobileTimerClose()
+      this.stopMobileTimerOpen()
+      this.mobileItemOpenTimeout = setTimeout(() => {
+        if (this.mobileItem === item) return
+        let sidebarTop = this.$el.getBoundingClientRect().top
+        let itemTop = itemEl.getBoundingClientRect().top
+        let itemLinkEl = itemEl.children[0]
 
-      let styles = window.getComputedStyle(itemEl)
-      let paddingTop = parseFloat(styles.paddingTop)
-      let marginTop = parseFloat(styles.marginTop)
+        let styles = window.getComputedStyle(itemEl)
+        let paddingTop = parseFloat(styles.paddingTop)
+        let marginTop = parseFloat(styles.marginTop)
 
-      let height = itemLinkEl.offsetHeight
-      let positionTop = itemTop - sidebarTop + paddingTop + marginTop
+        let height = itemLinkEl.offsetHeight
+        let positionTop = itemTop - sidebarTop + paddingTop + marginTop
 
-      this.$nextTick(() => {
-        this.initParentOffsets()
-        this.mobileItem = item
-        this.mobileItemPos = positionTop
-        this.mobileItemHeight = height
-      })
+        this.$nextTick(() => {
+          this.initParentOffsets()
+          this.mobileItem = item
+          this.mobileItemPos = positionTop
+          this.mobileItemHeight = height
+        })
+      }, 50)
     },
     unsetMobileItem (delay) {
+      this.stopMobileTimerOpen()
       if (!delay) {
-        this.stopMobileTimer()
+        this.stopMobileTimerClose()
         this.mobileItem = null
         return
       }
-      if (!this.mobileItemTimeout) {
-         this.mobileItemTimeout = setTimeout(() => {
-         this.mobileItem = null
-         }, 600)
+      if (!this.mobileItemCloseTimeout) {
+        this.mobileItemCloseTimeout = setTimeout(() => {
+          this.mobileItem = null
+        }, 600)
       }
     },
-    stopMobileTimer () {
-      if (this.mobileItemTimeout) clearTimeout(this.mobileItemTimeout)
-      this.mobileItemTimeout = null
+    stopMobileTimerClose () {
+      if (this.mobileItemCloseTimeout) clearTimeout(this.mobileItemCloseTimeout)
+      this.mobileItemCloseTimeout = null
+    },
+    stopMobileTimerOpen () {
+      if (this.mobileItemOpenTimeout) clearTimeout(this.mobileItemOpenTimeout)
+      this.mobileItemOpenTimeout = null
     },
     initParentOffsets () {
       let { top: sidebarTop, left: sidebarLeft, right: sidebarRight } = this.$el.getBoundingClientRect()
@@ -284,7 +298,7 @@ export default {
       emitActiveShow: this.onActiveShow,
       emitItemClick: this.onItemClick,
       emitItemUpdate: this.onItemUpdate,
-      emitStopMobileTimer: this.stopMobileTimer
+      emitStopMobileTimerClose: this.stopMobileTimerClose,
     }
   }
 }
